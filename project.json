@@ -1,0 +1,13 @@
+{
+    "id": "driver/gen/doc/doxygen",
+    "type": "package",
+    "value": {
+        "description": "Parsing doxygen XML to Markdown",
+        "author": "Sander Mertens",
+        "license": "GPL-3.0",
+        "version": "1.0.0",
+        "language": "c",
+        "managed": false,
+        "use": ["corto", "parson", "corto/g", "driver/fmt/xml"]
+    }
+}
