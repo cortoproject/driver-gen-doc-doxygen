@@ -459,7 +459,7 @@ int16_t dg_toMd(
             } else {
                 g_fileWrite(data.mdFile, "## %s\n\n", chapter);
             }
-            g_fileWrite(data.mdFile, "%s\n\n", brief);
+            g_fileWrite(data.mdFile, "[%s]\n\n", brief);
             if (detail) {
                 corto_xmlreaderWalkCallback callbacks[CORTO_XML_CALLBACK_MAX] = {NULL};
                 callbacks[CORTO_XML_ELEMENT_NODE] = dg_walkDetailedDescriptionContent_node;
