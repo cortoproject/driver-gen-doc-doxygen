@@ -227,7 +227,7 @@ found:
 static
 int16_t dg_printFluent(
     char *name,
-    char *returnType,
+    char *return_type,
     dg_data *data)
 {
     corto_id fluentDefFile;
@@ -237,7 +237,7 @@ int16_t dg_printFluent(
     strcat(fluentDefFile, "/struct");
     bptr = &fluentDefFile[strlen(fluentDefFile)];
 
-    for (ptr = returnType; (ch = *ptr); ptr++) {
+    for (ptr = return_type; (ch = *ptr); ptr++) {
         if (ch == '_') {
             bptr[0] = '_';
             bptr[1] = '_';
@@ -264,7 +264,7 @@ int16_t dg_printFluent(
         g_fileWrite(data->mdFile, "The following methods extend the functionality of `%s` by\n", name);
         g_fileWrite(data->mdFile, "appending them to a call like this: `%s(...).<method>(...)`.\n", name);
         g_fileWrite(data->mdFile, "Multiple methods can be appended to the call, as long as the\n");
-        g_fileWrite(data->mdFile, "previous method returns an instance of `%s`.\n", returnType);
+        g_fileWrite(data->mdFile, "previous method returns an instance of `%s`.\n", return_type);
 
         if (!corto_xmlnodeWalkChildren(fluentData.node, dg_walkFunctions, &fluentData)) {
             corto_throw("error(s) occurred while parsing");
@@ -293,23 +293,23 @@ int dg_walkFunction(
         char *name = dg_findNodeContent(node, "name");
         if (name[0] == '_') name ++;
 
-        char *returnType = dg_findNodeContent(node, "definition");
+        char *return_type = dg_findNodeContent(node, "definition");
 
         /* Strip name */
         if (!data->parsingFluent) {
-            *strrchr(returnType, ' ') = '\0';
+            *strrchr(return_type, ' ') = '\0';
         } else {
-            *strchr(returnType, '(') = '\0';
+            *strchr(return_type, '(') = '\0';
         }
 
         /* Strip prefixes (like export macro's) */
-        char *definitionStart = strrchr(returnType, ' ');
+        char *definitionStart = strrchr(return_type, ' ');
         if (definitionStart) {
-            char *argsStart = strchr(returnType, '(');
+            char *argsStart = strchr(return_type, '(');
             if (argsStart && (definitionStart > argsStart)) {
                 definitionStart = argsStart;
             }
-            returnType = definitionStart + 1;
+            return_type = definitionStart + 1;
         }
 
         char *briefdescription = dg_findNodeContent(node, "briefdescription/para");
@@ -339,7 +339,7 @@ int dg_walkFunction(
 
             g_fileWrite(data->mdFile, "####");
             if (data->parsingFluent) g_fileWrite(data->mdFile, "#");
-            g_fileWrite(data->mdFile, "Signature\n\n```c\n%s\n%s%s\n```\n\n", returnType, name, argsstring);
+            g_fileWrite(data->mdFile, "Signature\n\n```c\n%s\n%s%s\n```\n\n", return_type, name, argsstring);
 
             corto_xmlnode paramList = NULL;
             corto_xmlnodeWalkChildren(detailedDescription, dg_findParameterList, &paramList);
@@ -352,11 +352,11 @@ int dg_walkFunction(
 
             /* Obtain returntype, add fluent description if applicable */
             if (!data->parsingFluent) {
-                int returnTypeLength = strlen(returnType),
+                int return_typeLength = strlen(return_type),
                     fluentLength = strlen("__fluent");
-                if (returnTypeLength > fluentLength) {
-                    if (!strcmp(&returnType[returnTypeLength - fluentLength], "__fluent")) {
-                        if (dg_printFluent(name, returnType, data)) {
+                if (return_typeLength > fluentLength) {
+                    if (!strcmp(&return_type[return_typeLength - fluentLength], "__fluent")) {
+                        if (dg_printFluent(name, return_type, data)) {
                             goto error;
                         }
                     }
